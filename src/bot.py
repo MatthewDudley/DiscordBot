@@ -10,17 +10,25 @@ import mlbgame
 
 # --- variables ---
 bot = commands.Bot(command_prefix = '.')
-status = cycle(['.help for commands', '.score [team]', '.lineup [team]', '.standings', '.games'])
+status = cycle(['.help for commands', '.score', '.lineup', '.standings', '.info'])
 # --- variables end ---
 
 
 # --- bot envents ---
 @bot.event
 async def on_ready():
+    
     # call change_status method for rotating status
     change_status.start()
+
+    # gather relevent information for commands
+    # ! This step is due to the mlbgame wrapper being really slow.
+    # ! So I start getting the information as soon as the bot goes online and run every 12 hours. 
+    # ! This should be enough for this bots functionality
+    # ? I plan to improve this once I find a decent free real time api or mlb comes out with thier own :)
+
     # log bot is running
-    print(f'{bot.user.name} is ready...')
+    print(f'{bot.user.name} is ready...\n')
 # --- bot events end ---
 
 
@@ -40,7 +48,7 @@ async def change_status():
 @bot.command()
 async def ping(ctx):
     # log pong message
-    print(f'Pong! {round(bot.latency * 1000)}ms')
+    print(f'Pong! {round(bot.latency * 1000)}ms\n')
     # send pong message to the channel
     await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
 
@@ -56,14 +64,34 @@ async def prefix(ctx, newPrefix):
     # send message indicating new prefix
     await ctx.send(f'New command prefix is {bot.command_prefix}!')
 
-# braves command
+# # braves command
+# @bot.command()
+# async def braves(ctx):
+
+# standings command
 @bot.command()
-async def braves(ctx):
-    print('in braves command')
-    month = mlbgame.games(2019, 6, home='Braves')
-    games = mlbgame.combine_games(month)
-    print(games[0])
-    await ctx.send(games[0])
+async def standings(ctx):
+    
+    standings = mlbgame.standings()          
+    
+    header = str.format('{0:25} {1:5} {2:5} {3:6} {4:5}\n'.format('Team', 'W', 'L', 'L10', 'GB'))
+    divider = '-------------------------------------------------\n'
+    standings_txt = ''
+    
+    for division in standings.divisions:
+        
+        if (division.name == 'NL East'):            
+        
+            print('geting NL East stadnings...\n')
+        
+            for team in division.teams:
+                standings_txt += str.format('{0:25} {1:<5} {2:<5} {3:<6} {4:<5}\n'.format(team.team_full, team.w, team.l, team.last_ten, team.gb))
+        else:
+            break
+
+    # send message
+    print(header + divider + standings_txt)
+    await ctx.send(' ```' + header + divider + standings_txt + ' ```')
 
 # dev | stop command
 @bot.command()
