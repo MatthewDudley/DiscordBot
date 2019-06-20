@@ -1,8 +1,10 @@
 # --- imports ---
+from __future__ import print_function
 import discord
 from config import BOT_TOKEN
 from discord.ext import commands, tasks
 from itertools import cycle
+import mlbgame
 # --- imports end ---
 
 
@@ -53,6 +55,15 @@ async def prefix(ctx, newPrefix):
     bot.command_prefix = newPrefix
     # send message indicating new prefix
     await ctx.send(f'New command prefix is {bot.command_prefix}!')
+
+# braves command
+@bot.command()
+async def braves(ctx):
+    print('in braves command')
+    month = mlbgame.games(2019, 6, home='Braves')
+    games = mlbgame.combine_games(month)
+    print(games[0])
+    await ctx.send(games[0])
 
 # dev | stop command
 @bot.command()
