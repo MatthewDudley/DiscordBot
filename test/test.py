@@ -20,12 +20,25 @@ print(f'boxScore: {boxScore}\n')
 print(boxScore.print_scoreboard()) '''
 
 # ! NL East standings
-standings = mlbgame.standings()
+''' standings = mlbgame.standings()
 for division in standings.divisions:
     print()
     if (division.name == 'NL East'):
         print ("{0:25} {1:6} {2:6} {3:6}".format("Team", "W", "L", "L10"))
         print('--------------------------------------------')
         for team in division.teams:
-            print ('{0:25} {1:<6} {2:<6} {3:<6}'.format(team.team_full, team.w, team.l, team.last_ten))
+            print ('{0:25} {1:<6} {2:<6} {3:<6}'.format(team.team_full, team.w, team.l, team.last_ten)) '''
+
+
+# ! find BRaves team_id
+
+''' teams = mlbgame.teams()
+for team in teams:
+    print(f'{team.club_full_name} - {team.team_id}') '''
+
+print ("{0:6} {1:25} {2:6}".format('Number', 'Name', "Pos."))
+lineup = mlbgame.roster(144)
+for player in lineup.players:
+    print ('{0:<6} {1:<25} {2:<6}'.format(player.jersey_number, player.name_full, player.position_txt))
+    
 
