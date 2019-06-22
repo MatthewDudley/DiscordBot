@@ -106,3 +106,4 @@ venv.bak/
 
 # specific files
 src/config.py
+.vscode
